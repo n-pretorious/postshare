@@ -65,7 +65,7 @@ class Profile(models.Model):
     image = CloudinaryField("image", null=True, blank=True)
     userName = models.CharField(max_length=254, null=True, blank=True)
     bio = models.TextField(max_length=254, null=True, blank=True)
-    contact = models.IntegerField(null=True, blank=True)
+    contact = models.CharField(max_length=30, null=True, blank=True)
     is_coach = models.BooleanField(default=False)
     is_artist = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

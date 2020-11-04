@@ -44,11 +44,12 @@ INSTALLED_APPS = [
     "rest_framework",
     "account",
     "artAttack",
+    "drf_yasg",
 ]
 
 SWAGGER_SETTINGS = {
     "SECURITY_DEFINITIONS": {
-        "Auth Token eg [Bearer (JWT) ]": {
+        "Auth Token eg [Bearer <JWT> ]": {
             "type": "apiKey",
             "name": "Authorization",
             "in": "header",

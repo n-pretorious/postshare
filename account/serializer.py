@@ -1,12 +1,16 @@
 from django.db import models
+from django.db.models import fields
 from rest_framework import serializers
 from .models import Profile, User
 
 
 class UserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(max_length=65, min_length=8, write_only=True)
+    email = serializers.EmailField(max_length=255, min_length=4)
+
     class Meta:
         model = User
-        fields = "__all__"
+        fields = ["email", "password"]
 
     def validate(self, attrs):
         email = attrs.get("email", "")
@@ -19,12 +23,16 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(max_length=65, min_length=8, write_only=True)
+    email = serializers.EmailField(max_length=255, min_length=4)
+
     class Meta:
         model = User
         fields = ["email", "password"]
-
-
+        
 class ProfileSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = Profile
-        fields = "__all__"
+        fields = ["image", "userName", "bio", "contact", "is_coach", "is_artist"]
+        

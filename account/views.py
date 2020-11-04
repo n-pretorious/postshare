@@ -1,5 +1,5 @@
 from account.models import Profile
-from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 from account.serializer import LoginSerializer, ProfileSerializer, UserSerializer
 from django.shortcuts import render
 
@@ -13,7 +13,9 @@ import jwt
 # Create your views here.
 
 
-class SignupApi(APIView):
+class SignupApi(GenericAPIView):
+    serializer_class = UserSerializer
+
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
@@ -23,7 +25,9 @@ class SignupApi(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class LoginApi(APIView):
+class LoginApi(GenericAPIView):
+    serializer_class = LoginSerializer
+
     def post(self, request):
         data = request.data
         email = data.get("email", "")
@@ -43,3 +47,7 @@ class LoginApi(APIView):
         return Response(
             {"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
         )
+
+
+class ProfileApi(GenericAPIView):
+    serializer_class = ProfileSerializer
