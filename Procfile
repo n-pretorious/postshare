@@ -1,0 +1,1 @@
+web: gunicorn postshare.wsgi --log-file -
