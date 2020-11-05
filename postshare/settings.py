@@ -15,6 +15,18 @@ from pathlib import Path
 from decouple import config, Csv
 import dj_database_url
 import cloudinary
+import django_heroku
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
+sentry_sdk.init(
+    dsn="https://cb90869b6a8649c4a25f6287ae6f25c6@o472019.ingest.sentry.io/5505025",
+    integrations=[DjangoIntegration()],
+    traces_sample_rate=1.0,
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True,
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -45,6 +57,7 @@ INSTALLED_APPS = [
     "account",
     "artAttack",
     "drf_yasg",
+    "corsheaders",
 ]
 
 SWAGGER_SETTINGS = {
@@ -67,6 +80,7 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -149,11 +163,21 @@ USE_L10N = True
 
 USE_TZ = True
 
+# CORS
+CORS_ALLOWED_ORIGINS = [
+    "https://example.com",
+    "https://sub.example.com",
+    "http://localhost:4200",
+    "http://127.0.0.1:4200",
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
-
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATIC_URL = "/static/"
+
+# Extra places for collectstatic to find static files.
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
 
 # Redirect after login and logout
@@ -168,4 +192,7 @@ cloudinary.config(
 )
 
 # Configure Django App for Heroku.
-# django_heroku.settings(locals())
+django_heroku.settings(locals())
+
+
+COMPRESS_ENABLED = os.environ.get("COMPRESS_ENABLED", False)

@@ -1,16 +1,13 @@
 from account.models import Profile
+from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.generics import GenericAPIView
 from account.serializer import LoginSerializer, ProfileSerializer, UserSerializer
-from django.shortcuts import render
-
-# from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.conf import settings
 from django.contrib import auth
 import jwt
-
-# Create your views here.
+from rest_framework import permissions
 
 
 class SignupApi(GenericAPIView):
@@ -49,5 +46,19 @@ class LoginApi(GenericAPIView):
         )
 
 
-class ProfileApi(GenericAPIView):
+class ProfileList(ListAPIView):
+
     serializer_class = ProfileSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        return Profile.objects.all()
+
+
+class ProfileDetailApi(RetrieveUpdateDestroyAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    lookup_field = "id"
+
+    def get_queryset(self):
+        return Profile.objects.filter(user=self.request.user)
