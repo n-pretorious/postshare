@@ -41,8 +41,6 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=254, null=True, blank=True)
-    fname = models.CharField(max_length=254, null=True, blank=True)
-    lname = models.CharField(max_length=254, null=True, blank=True)
     email = models.EmailField(max_length=254, unique=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
@@ -70,7 +68,7 @@ class Profile(models.Model):
     contact = models.CharField(max_length=30, null=True, blank=True)
     is_coach = models.BooleanField(default=False)
     is_artist = models.BooleanField(default=False)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         if self.is_artist == True:
@@ -80,12 +78,12 @@ class Profile(models.Model):
 
 
 # signals to associate profile with user actions
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+@receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
 
 
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+@receiver(post_save, sender=User)
 def save_profile(sender, instance, **kwargs):
     Profile.objects.get(user=instance).save()
