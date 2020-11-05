@@ -1,3 +1,8 @@
 from django.db import models
 
-# Create your models here.
+def upload_path(instance, filname):
+    return '/'.join(['Description', str(instance.title), filname])
+
+class Book(models.Model):
+    title= models.CharField(max_length=32, blank=False)
+    cover = models.ImageField(blank=True, null=True, upload_to=upload_path)
