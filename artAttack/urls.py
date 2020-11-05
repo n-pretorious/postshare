@@ -1,5 +1,7 @@
-from . import views
+from artAttack.views import ArtDetailApi, ArtList
+from django.urls.conf import path
 
 urlpatterns = [
-  # path("/", .as_view(), name=""),
+    path('', ArtList.as_view()),
+    path("<int:id>", ArtDetailApi.as_view()),
 ]
