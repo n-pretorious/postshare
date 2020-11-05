@@ -1,5 +1,3 @@
-from django.db import models
-from django.db.models import fields
 from rest_framework import serializers
 from .models import Profile, User
 
@@ -29,10 +27,20 @@ class LoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["email", "password"]
-        
+
+
 class ProfileSerializer(serializers.ModelSerializer):
-    
+    user_email = serializers.CharField(source='user.email', read_only=True)
+
     class Meta:
         model = Profile
-        fields = ["pk", "user", "image", "userName", "bio", "contact", "is_coach", "is_artist"]
-        
+        fields = [
+            "pk",
+            "user_email",
+            "image",
+            "userName",
+            "bio",
+            "contact",
+            "is_coach",
+            "is_artist",
+        ]
